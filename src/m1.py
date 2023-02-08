@@ -60,11 +60,11 @@ class FullyConnectedNet(nn.Module):
         @component (2+1)D CNN
         @component Fully-connected NN
 """
-class SSBDBinaryNet(nn.Module):
+class SSBDModel1(nn.Module):
     def __init__(self, in_channels, intermediate, 
                  out_channels, kernel_size, strides, pooling_size, 
                  pooling_strides, size_1, size_2, size_3):
-        super(SSBDBinaryNet, self).__init__()
+        super(SSBDModel1, self).__init__()
         
         self.net = nn.Sequential(
             TwoPlusOneD_CNN(in_channels, intermediate,  

@@ -28,14 +28,14 @@ import torch
         @param n_classes: Array containing the respective convolutional stride values
             @default 3
 """
-class SSBDActionNet(nn.Module):
+class SSBDModel2(nn.Module):
     def __init__(self, dropout_rate, dim_embedding, dim_hidden, num_lstm_layers,
                  dim_fc_layer_1, dim_fc_layer_2,
                  base_model = models.resnet18(pretrained = True),
                  n_frames = 40,
                  use_movenet = True,
                  n_classes = 3):
-        super(SSBDActionNet, self).__init__()
+        super(SSBDModel2, self).__init__()
         
         self.n_classes = n_classes
         self.dropout_rate = dropout_rate
