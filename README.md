@@ -9,6 +9,9 @@ Code and material relevant to the paper, "Introducing SSBD+ Dataset with an Atte
 --- 
 All relevant links can be found here:
 ###  Installation and Usage: [INSTALL.md](./docs/INSTALL.md)
+
+`pip install --upgrade ssbdplus`  
+
 ###  Models and their description: [MODELS.md](./docs/MODELS.md) 
 
 ```py
