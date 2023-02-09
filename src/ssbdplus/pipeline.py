@@ -2,8 +2,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from m1 import SSBDModel1
-from m2 import SSBDModel2
+from .m1 import SSBDModel1
+from .m2 import SSBDModel2
 
 import torchvision.models as models
 
@@ -49,6 +49,7 @@ M2_PARAMS = dict(
 """
 class SSBDPipeline(nn.Module):
     def __init__(self):
+        super(SSBDPipeline, self).__init__()
         self.m1 = SSBDModel1(**M1_PARAMS)
         self.m2 = SSBDModel2(**M2_PARAMS)
 
