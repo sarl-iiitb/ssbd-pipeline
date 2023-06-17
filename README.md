@@ -12,7 +12,7 @@ All relevant links can be found here:
 
 `pip install --upgrade ssbdplus`  
 
-###  Models and their description: [MODELS.md](./docs/MODELS.md) 
+###  Models and their descriptions: [MODELS.md](./docs/MODELS.md) 
 
 ```py
 from ssbdplus.pipeline import SSBDPipeline
