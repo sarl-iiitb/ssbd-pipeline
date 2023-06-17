@@ -1,6 +1,6 @@
 ## Installing the module
 
-`pip install --upgrade ssbdplus`
+From [PyPI](https://pypi.org/project/ssbdplus/): `pip install --upgrade ssbdplus`
 
 ### Note
 You will need to have the following packages installed in your environment
