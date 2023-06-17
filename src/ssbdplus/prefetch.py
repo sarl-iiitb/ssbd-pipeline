@@ -4,8 +4,12 @@ import torchvision.models as models
 import torch.nn.functional as F
 
 """
-    @class Prefetch used to classify YOLO bounding boxes as adults or children
-           This model was used as a part of preprocessing.
+    @class Prefetch
+        Used to classify YOLO bounding boxes as adults or children
+        This model was used as a part of preprocessing.
+        @component VGG-19 base CNN model
+        @component Fully-connected NN
+        
         @param dropout_rate: The dropout rate used by the model
             @default 0.40
         @param dim_fc_layer_1: The dimension of the first hidden layer
