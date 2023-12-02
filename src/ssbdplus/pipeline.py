@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from .m1 import SSBDModel1
-from .m2 import SSBDModel2
+from .m2 import load_ssbd_model2
 
 import torchvision.models as models
 
@@ -51,14 +51,14 @@ class SSBDPipeline(nn.Module):
     def __init__(self):
         super(SSBDPipeline, self).__init__()
         self.m1 = SSBDModel1(**M1_PARAMS)
-        self.m2 = SSBDModel2(**M2_PARAMS)
+        self.m2 = load_ssbd_model2()
 
     def forward(self, x):
         vid, movenet_x = x
         prob_action = F.sigmoid(self.m1(vid))
 
         if prob_action > 0.5:
-            _, pred = torch.max(F.softmax(self.m2(x)).data, 1)
+            _, pred = self.m2(vid, movenet_x)
             return int(float(pred.cpu().numpy()[0])) + 1
 
         return 0
