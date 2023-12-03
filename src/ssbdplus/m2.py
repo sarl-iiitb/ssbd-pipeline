@@ -1,6 +1,7 @@
 import tensorflow as tf
+from frame_selector import get_movenet_data, frame_with_max_change
 
-M2_PATH = "path/to/m2"
+M2_PATH = "mdl_wts.hdf5"
 
 """
 Creates an instance of the SSBD Identifier model
@@ -33,7 +34,28 @@ def create_ssbd_model2():
     return model
 
 def load_ssbd_model2():
-    model = create_model()
-    model.load_weights(checkpoint_path)
+    model = create_ssbd_model2()
+    model.load_weights(M2_PATH)
 
     return model
+
+def train_model(model, train_set, test_set):
+    [train_frames, train_keypts], train_y = train_set
+    [test_frames, test_keypts], test_y = test_set
+    
+    model.compile(optimizer = tf.keras.optimizers.Adam(learning_rate = 0.1, amsgrad = True),
+                loss = tf.keras.losses.CategoricalCrossentropy(from_logits = False),
+                metrics = [tf.keras.metrics.CategoricalAccuracy(), tf.keras.metrics.Precision(), tf.keras.metrics.Recall()])
+    mcp_save = tf.keras.callbacks.ModelCheckpoint(M2_PATH, save_best_only=True, monitor='val_categorical_accuracy', mode='max')
+
+    model.fit(x = [train_frames, train_keypts], y = train_y,
+                epochs = 100, validation_data = ([test_frames, test_keypts], test_y),
+                callbacks=[mcp_save], batch_size = 64, shuffle = True)
+
+
+def m2_identify(model, video_path):
+    keypts, frames = get_movenet_data(video_path)
+    _, max_loc = frame_with_max_change(keypts)
+    best_frame = frames[max_loc + 1]
+    return model.predict([best_frame, keypts])
+

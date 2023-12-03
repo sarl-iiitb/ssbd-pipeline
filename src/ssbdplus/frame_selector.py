@@ -129,7 +129,7 @@ def get_best_frames(video_dir, test = False):
         keypts, frames = get_movenet_data(video_dir + '/' + video)
         all_keypts.append(processed(keypts))
 
-        max_diff, max_loc = frame_with_max_change(keypts)
+        _, max_loc = frame_with_max_change(keypts)
         best_frames.append(frames[max_loc + 1])
         
         if not test:

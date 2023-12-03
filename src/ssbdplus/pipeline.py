@@ -1,9 +1,10 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import numpy as np
 
 from .m1 import SSBDModel1
-from .m2 import load_ssbd_model2
+from .m2 import load_ssbd_model2, m2_identify
 
 import torchvision.models as models
 
@@ -22,43 +23,23 @@ M1_PARAMS = dict(
     size_2 = 64, 
     size_3 = 16
 )
+ID2ACTION = ["noclass", "armflapping", "headbanging", "spinning"]
+
 
 """
-    Arguments for the M2 model
+    Pipeline Code. Outputs the exact action name out of ID2ACTION
 """
-M2_PARAMS = dict(
-    dropout_rate = 0.50,
-    dim_embedding = 64,
-    dim_hidden = 64,
-    num_lstm_layers = 32,
-    dim_fc_layer_1 = 128,
-    dim_fc_layer_2 = 8,
-    base_model = models.resnet18(pretrained = True),
-    n_frames = 40,
-    use_movenet = True,
-    n_classes = 3
-)
+def detect_actions(video_path):
+    results = []
+    m1 = SSBDModel1(**M1_PARAMS)
+    m2 = load_ssbd_model2()
+    
+    video = prefetch_call(video_path) # TODO
+    prob_action = F.sigmoid(m1(video))
+    action_id = -1
+    
+    if prob_action > 0.5:
+        action_id = np.argmax(m2_identify(video_path), axis = 1)
+        
+    return ID2ACTION[action_id + 1]
 
-"""
-    Pipelined model for self-stimulatory behaviour detection
-        @note Expected output of the model
-            Noclass: 0
-            Armflapping: 1
-            Headbanging: 2
-            Spinning: 3
-"""
-class SSBDPipeline(nn.Module):
-    def __init__(self):
-        super(SSBDPipeline, self).__init__()
-        self.m1 = SSBDModel1(**M1_PARAMS)
-        self.m2 = load_ssbd_model2()
-
-    def forward(self, x):
-        vid, movenet_x = x
-        prob_action = F.sigmoid(self.m1(vid))
-
-        if prob_action > 0.5:
-            _, pred = self.m2(vid, movenet_x)
-            return int(float(pred.cpu().numpy()[0])) + 1
-
-        return 0
